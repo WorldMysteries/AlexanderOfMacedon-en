@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Does Alexander Rest? — The Mystery of Alexander the Great's Tomb</title>
+<meta name="description" content="An interactive investigation: the journey of Alexander the Great's body from Babylon to Alexandria, the testimony of ancient authors, a map of hypotheses about the location of the tomb, and a chronicle of the searches.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23090806'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23c9a55b' font-family='serif'%3EΣ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{
+  --bg:#090806;--bg2:#100e0a;--bg3:#181511;
+  --gold:#c9a55b;--gold2:#e8cc84;--gold3:#7d6334;
+  --sand:#ebe1cb;--sand2:#cfc4aa;--muted:#948a76;
+  --line:rgba(235,225,203,.09);--line2:rgba(201,165,91,.35);
+  --red:#a1392a;--green:#7fb286;--blue:#7f9fd0;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Manrope',system-ui,-apple-system,sans-serif;
+  --caps:'Cinzel','Cormorant Garamond',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--sand);font-family:var(--sans);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;font-weight:300}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.055;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+::selection{background:var(--gold);color:var(--bg)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#2a251c;border:2px solid var(--bg)}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.05}
+a{color:inherit}
+button{font-family:inherit}
+img{max-width:100%;display:block}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,48px);position:relative}
+section{padding:clamp(80px,10vw,140px) 0;position:relative;scroll-margin-top:70px}
+.overline{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:14px;font-weight:500}
+.overline::before{content:'';width:40px;height:1px;background:var(--gold);flex:none}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:clamp(18px,3vw,36px);align-items:start;margin-bottom:clamp(40px,6vw,72px)}
+.sec-head .num{font-family:var(--caps);font-size:clamp(3rem,6vw,5.4rem);line-height:.9;color:transparent;-webkit-text-stroke:1px var(--gold3);padding-top:6px}
+.sec-head h2{font-size:clamp(2.2rem,4.5vw,4rem);font-weight:300;letter-spacing:-.01em}
+.sec-head h2 em{color:var(--gold2);font-style:italic}
+.sec-head .lead{max-width:660px;color:var(--sand2);margin-top:16px;font-size:1.05rem;line-height:1.7}
+.btn{display:inline-flex;align-items:center;gap:12px;padding:16px 28px;border:1px solid var(--gold);color:var(--gold2);text-decoration:none;font-size:.75rem;letter-spacing:.24em;text-transform:uppercase;font-weight:500;position:relative;overflow:hidden;transition:.4s;background:transparent;cursor:pointer}
+.btn::before{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .45s cubic-bezier(.2,.7,.2,1);z-index:0}
+.btn span{position:relative;z-index:1}
+.btn:hover{color:var(--bg)}
+.btn:hover::before{transform:none}
+.btn.solid{background:var(--gold);color:var(--bg)}
+.btn.solid::before{background:var(--gold2)}
+.btn.ghost{border-color:var(--line2);color:var(--sand)}
+
+/* progress + nav */
+.progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--gold3),var(--gold2));z-index:60;transition:width .1s linear}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:20px clamp(20px,4vw,48px);transition:.4s}
+.nav.scrolled{background:rgba(9,8,6,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--sand)}
+.brand svg{width:36px;height:36px;color:var(--gold);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.brand:hover svg{transform:rotate(90deg)}
+.brand b{font-family:var(--serif);font-size:1.3rem;font-weight:500;display:block;line-height:1}
+.brand small{display:block;font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.nav ul{display:flex;gap:30px;list-style:none}
+.nav a.lnk{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sand2);text-decoration:none;position:relative;padding:6px 0;font-weight:500;transition:.3s}
+.nav a.lnk::after{content:'';position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--gold);transition:.3s}
+.nav a.lnk:hover::after,.nav a.lnk.active::after{width:100%}
+.nav a.lnk.active{color:var(--gold2)}
+.burger{display:none;width:44px;height:44px;border:1px solid var(--line2);background:transparent;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;z-index:52}
+.burger i{width:20px;height:1px;background:var(--gold);transition:.3s;display:block}
+.nav.open .burger i:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav.open .burger i:nth-child(2){opacity:0}
+.nav.open .burger i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media (max-width:1000px){
+  .nav ul{position:fixed;inset:0;background:rgba(9,8,6,.97);flex-direction:column;align-items:center;justify-content:center;gap:30px;transform:translateY(-100%);transition:transform .5s cubic-bezier(.2,.7,.2,1);z-index:51}
+  .nav.open ul{transform:none}
+  .burger{display:flex}
+  .nav a.lnk{font-size:1.05rem;letter-spacing:.3em}
+}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:150px 0 90px;overflow:hidden;isolation:isolate;background:var(--bg)}
+.hero-img{position:absolute;inset:0;background:url('https://images.pexels.com/photos/37844123/pexels-photo-37844123.jpeg?auto=compress&cs=tinysrgb&w=1800') center 40%/cover no-repeat;opacity:.28;filter:saturate(.35) contrast(1.1);mix-blend-mode:luminosity;z-index:-3;transform:scale(1.04)}
+.hero::before{content:'';position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(9,8,6,.55) 0%,rgba(9,8,6,.25) 40%,rgba(9,8,6,.9) 85%,var(--bg) 100%),radial-gradient(ellipse at 70% 40%,rgba(201,165,91,.14),transparent 55%)}
+#dust{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.sun-bg{position:absolute;right:-12vw;top:50%;transform:translateY(-50%);width:min(78vw,860px);height:min(78vw,860px);color:var(--gold);opacity:.07;z-index:-1;animation:spin 260s linear infinite}
+@keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+.side-label{position:absolute;left:clamp(14px,2vw,28px);top:50%;translate:0 -50%;writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--caps);font-size:.62rem;letter-spacing:.45em;color:var(--muted);z-index:2;white-space:nowrap}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:60px;align-items:end;position:relative;z-index:2}
+.hero h1{font-size:clamp(3.4rem,9.6vw,9.4rem);font-weight:300;line-height:.92;margin:26px 0 26px;letter-spacing:-.02em}
+.hero h1 em{font-style:italic;color:var(--gold2);font-weight:300}
+.hero .lead{font-size:clamp(1rem,1.3vw,1.18rem);color:var(--sand2);max-width:580px;line-height:1.7}
+.hero .lead b{color:var(--sand);font-weight:500}
+.btns{display:flex;gap:16px;margin-top:40px;flex-wrap:wrap}
+.hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:rgba(9,8,6,.6);padding:26px 24px;backdrop-filter:blur(6px)}
+.stat .n{font-family:var(--serif);font-size:clamp(2.4rem,4vw,3.6rem);color:var(--gold2);line-height:1;font-weight:300}
+.stat .n sup{font-size:.45em;vertical-align:top;margin-left:2px}
+.stat .l{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-top:10px;font-weight:500}
+.scroll-cue{position:absolute;left:50%;bottom:26px;translate:-50% 0;display:flex;flex-direction:column;align-items:center;gap:10px;font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:var(--muted);z-index:2}
+.scroll-cue i{width:1px;height:54px;background:linear-gradient(var(--gold),transparent);position:relative;overflow:hidden;display:block}
+.scroll-cue i::after{content:'';position:absolute;left:0;top:-100%;width:100%;height:100%;background:var(--gold2);animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{to{top:120%}}
+@media (max-width:960px){.hero-grid{grid-template-columns:1fr;gap:40px}.sun-bg{right:-40vw;width:120vw;height:120vw;opacity:.05}.side-label{display:none}.hero{padding-bottom:110px}}
+
+/* ticker */
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:15px 0;background:var(--bg2);position:relative;z-index:2}
+.ticker-track{display:flex;width:max-content;animation:ticker 48s linear infinite}
+.ticker span{font-family:var(--caps);font-size:.7rem;letter-spacing:.38em;color:var(--gold3);white-space:nowrap;padding-right:52px}
+.ticker span::after{content:'✦';margin-left:52px;color:var(--gold);opacity:.6}
+@keyframes ticker{to{transform:translateX(-50%)}}
+
+/* dossier */
+.dossier{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start}
+.file{border:1px solid var(--line2);padding:clamp(26px,4vw,44px);position:relative;background:linear-gradient(180deg,rgba(201,165,91,.06),transparent 60%)}
+.file::before{content:'';position:absolute;inset:8px;border:1px solid var(--line);pointer-events:none}
+.file .tag{font-family:var(--caps);font-size:.62rem;letter-spacing:.35em;color:var(--muted);margin-bottom:22px;display:block}
+.file dl{display:grid;grid-template-columns:max-content 1fr;gap:16px 28px}
+.file dt{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);padding-top:5px;font-weight:500}
+.file dd{color:var(--sand);border-bottom:1px dashed var(--line);padding-bottom:14px;font-size:.98rem}
+.file dd b{font-weight:500;color:var(--gold2)}
+.file dd.big{font-family:var(--serif);font-size:1.5rem;color:var(--gold2);border-bottom:0;padding-bottom:0}
+.file .days{font-family:var(--serif);font-size:clamp(2rem,3.4vw,2.8rem);color:var(--sand);line-height:1}
+.file .days small{display:block;font-family:var(--sans);font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.stamp{position:absolute;right:26px;top:-20px;transform:rotate(-7deg);border:3px double var(--red);color:#d26a5a;font-weight:600;letter-spacing:.32em;padding:10px 18px;font-size:.74rem;background:var(--bg);text-transform:uppercase;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.gloss{display:grid;gap:14px}
+.term{border-left:2px solid var(--gold3);padding:16px 20px;background:var(--bg2);transition:.3s}
+.term:hover{border-color:var(--gold2);background:var(--bg3)}
+.term b{font-family:var(--serif);font-size:1.4rem;font-weight:500;color:var(--gold2)}
+.term .gr{font-family:var(--serif);font-style:italic;color:var(--muted);margin-left:10px;font-size:1.05rem}
+.term p{font-size:.92rem;color:var(--sand2);margin-top:6px}
+@media (max-width:900px){.dossier{grid-template-columns:1fr}.file dl{grid-template-columns:1fr;gap:6px}.file dt{padding-top:10px}}
+
+/* journey */
+.journey{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,5vw,70px);align-items:start}
+.route-panel{position:sticky;top:88px;border:1px solid var(--line);background:radial-gradient(ellipse at 30% 20%,rgba(201,165,91,.08),transparent 60%),var(--bg2);padding:18px}
+.route-panel svg{width:100%;height:auto;display:block}
+.route-meta{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid var(--line);margin-top:14px;padding-top:14px;gap:14px}
+.route-meta .yr{font-family:var(--serif);font-size:clamp(1.6rem,2.6vw,2.3rem);color:var(--gold2);line-height:1;transition:.3s}
+.route-meta .loc{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);text-align:right;font-weight:500}
+.route-meta .loc b{display:block;color:var(--sand);font-weight:500;font-size:.8rem;letter-spacing:.14em;margin-top:4px}
+.node circle{fill:var(--bg);stroke:var(--gold);stroke-width:1.5;transition:.4s}
+.node text{fill:var(--sand2);font-family:var(--serif);font-size:15px;text-anchor:middle;transition:.4s}
+.node text.sub{fill:var(--muted);font-size:9.5px;font-family:var(--sans);letter-spacing:.12em;text-transform:uppercase}
+.node.ghost-n circle{stroke:var(--muted);stroke-dasharray:2 2}
+.node.ghost-n text{fill:var(--muted)}
+.node.on circle{fill:var(--gold);stroke:var(--gold2)}
+.node.on text{fill:var(--gold2)}
+.route-base{fill:none;stroke:rgba(201,165,91,.3);stroke-width:1.5;stroke-dasharray:4 5}
+.route-fill{fill:none;stroke:var(--gold2);stroke-width:2;filter:url(#glow)}
+.ghost{fill:none;stroke:rgba(235,225,203,.2);stroke-dasharray:2 6;stroke-width:1.2}
+.sea-l{font-family:var(--caps);font-size:9px;letter-spacing:4px;fill:rgba(127,159,208,.5);text-anchor:middle}
+#marker .halo{fill:rgba(201,165,91,.2);animation:pulseS 2.2s ease-out infinite;transform-origin:center;transform-box:fill-box}
+#marker .core{fill:var(--gold2)}
+@keyframes pulseS{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.steps{position:relative;padding-left:40px}
+.steps::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:1px;background:linear-gradient(var(--gold3),var(--line) 80%,transparent)}
+.step{position:relative;padding:0 0 68px;transition:.4s;opacity:.55}
+.step.active{opacity:1}
+.step::before{content:'';position:absolute;left:-37px;top:8px;width:11px;height:11px;border-radius:50%;border:1px solid var(--gold);background:var(--bg);transition:.4s}
+.step.active::before{background:var(--gold);box-shadow:0 0 0 6px rgba(201,165,91,.18),0 0 20px rgba(201,165,91,.6)}
+.step .when{font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.step h3{font-size:clamp(1.6rem,2.4vw,2rem);font-weight:400;margin:10px 0 12px;transition:.3s}
+.step.active h3{color:var(--gold2)}
+.step p{color:var(--sand2);font-size:.98rem;line-height:1.7}
+.step .src{display:inline-block;margin-top:14px;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:6px 10px}
+@media (max-width:960px){
+  .journey{grid-template-columns:1fr}
+  .route-panel{top:62px;z-index:5;padding:10px;background:rgba(16,14,10,.96)}
+  .route-panel svg{max-height:36vh;margin:0 auto}
+  .route-meta{margin-top:8px;padding-top:8px}
+  .step{opacity:1}
+}
+
+/* witnesses */
+.quotes{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 0 30px;scrollbar-width:none}
+.quotes::-webkit-scrollbar{display:none}
+.quote{flex:0 0 min(520px,86vw);scroll-snap-align:start;border:1px solid var(--line);padding:34px;background:var(--bg2);position:relative;display:flex;flex-direction:column;gap:18px;transition:.4s}
+.quote:hover{border-color:var(--line2);transform:translateY(-4px)}
+.quote::before{content:'“';position:absolute;top:4px;right:26px;font-family:var(--serif);font-size:8rem;line-height:1;color:var(--gold);opacity:.13;pointer-events:none}
+.quote .who{display:flex;gap:14px;align-items:center}
+.quote .mono{width:48px;height:48px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-family:var(--serif);font-size:1.5rem;color:var(--gold2);flex:none}
+.quote .who b{font-weight:500;display:block;font-size:1rem}
+.quote .who span{font-size:.76rem;color:var(--muted);display:block}
+.quote blockquote{font-family:var(--serif);font-size:1.35rem;line-height:1.4;color:var(--sand);flex:1}
+.quote .ctx{font-size:.84rem;color:var(--sand2);border-top:1px solid var(--line);padding-top:14px;display:flex;gap:16px;justify-content:space-between;align-items:flex-start}
+.quote .yr{color:var(--gold);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;padding-top:4px;font-weight:600}
+.qnav{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:4px}
+.qnav .hint{font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.qnav div{display:flex;gap:10px}
+.qnav button{width:48px;height:48px;border:1px solid var(--line2);background:transparent;color:var(--gold);cursor:pointer;font-size:1.1rem;transition:.3s}
+.qnav button:hover{background:var(--gold);color:var(--bg)}
+
+/* hypotheses */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+.filters button{border:1px solid var(--line2);background:transparent;color:var(--sand2);padding:10px 16px;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:.3s;font-weight:500}
+.filters button.on,.filters button:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
+.card{border:1px solid var(--line);background:var(--bg2);padding:30px;display:flex;flex-direction:column;gap:14px;position:relative;transition:.45s cubic-bezier(.2,.7,.2,1);cursor:pointer;overflow:hidden;text-align:left;color:inherit}
+.card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(201,165,91,.14),transparent 55%);opacity:0;transition:.4s;pointer-events:none}
+.card:hover,.card:focus-visible{border-color:var(--line2);transform:translateY(-5px);outline:none}
+.card:hover::after{opacity:1}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.card .idx{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-top:4px}
+.badge{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;padding:5px 9px;border:1px solid currentColor;border-radius:2px;font-weight:500;white-space:nowrap}
+.badge.gold{color:var(--gold)}.badge.green{color:var(--green)}.badge.red{color:#d26a5a}.badge.blue{color:var(--blue)}.badge.grey{color:var(--muted)}
+.card h3{font-size:1.8rem;font-weight:400;line-height:1.1}
+.card .place{font-size:.78rem;color:var(--muted);letter-spacing:.04em;margin-top:-6px}
+.card p{color:var(--sand2);font-size:.94rem;flex:1;line-height:1.65}
+.meter{display:flex;flex-direction:column;gap:8px}
+.meter .row{display:flex;justify-content:space-between;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.meter .row b{color:var(--gold2);font-family:var(--caps);letter-spacing:.1em;font-size:.72rem}
+.meter .bar{height:3px;background:var(--line);position:relative;overflow:hidden}
+.meter .bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--gold3),var(--gold2));transition:width 1.3s cubic-bezier(.2,.7,.2,1)}
+.card .more{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-top:4px;font-weight:500}
+.card .more::after{content:'→';transition:.3s;font-size:1rem}
+.card:hover .more::after{transform:translateX(6px)}
+.card.hide{display:none}
+.note{margin-top:28px;font-size:.78rem;color:var(--muted);max-width:720px}
+
+/* map */
+.map-wrap{display:grid;grid-template-columns:340px 1fr;border:1px solid var(--line);background:var(--bg2)}
+.map-list{border-right:1px solid var(--line);overflow-y:auto;max-height:640px}
+.map-list h4{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);padding:20px 22px 8px;font-weight:500}
+.map-list button{display:flex;width:100%;text-align:left;gap:14px;align-items:center;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 22px;color:var(--sand);cursor:pointer;transition:.25s}
+.map-list button:hover,.map-list button.on{background:rgba(201,165,91,.08)}
+.map-list .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex:none;box-shadow:0 0 10px rgba(201,165,91,.7)}
+.map-list .dot.rej{background:var(--red);box-shadow:none}
+.map-list .dot.route{background:var(--sand2);box-shadow:none;width:8px;height:8px}
+.map-list b{display:block;font-weight:500;font-size:.94rem;line-height:1.3}
+.map-list small{color:var(--muted);font-size:.74rem}
+.map-area{position:relative;min-height:640px}
+#map{scroll-margin-top:70px}
+#mapCanvas{height:640px;background:#0c0b09}
+.map-ctl{position:absolute;top:14px;right:14px;z-index:1001;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.map-ctl button{border:1px solid var(--line2);background:rgba(16,14,10,.9);color:var(--sand2);padding:8px 12px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:.3s;font-weight:500}
+.map-ctl button.on,.map-ctl button:hover{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.map-fallback{display:none;position:absolute;inset:0;place-items:center;text-align:center;padding:40px;color:var(--muted);font-size:.9rem;background:radial-gradient(ellipse at center,rgba(201,165,91,.08),transparent 60%)}
+.leaflet-container{font-family:var(--sans);background:#0c0b09}
+.leaflet-popup-content-wrapper{background:#14120d;color:var(--sand);border:1px solid var(--line2);border-radius:2px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.leaflet-popup-tip{background:#14120d}
+.leaflet-popup-content{margin:16px 18px;font-size:.88rem;line-height:1.5}
+.leaflet-popup-close-button{color:var(--muted)!important}
+.pop b{font-family:var(--serif);font-size:1.3rem;font-weight:500;display:block;color:var(--gold2);line-height:1.1;margin-bottom:4px}
+.pop span{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.pop p{margin:8px 0 10px;color:var(--sand2)}
+.pop button{background:var(--gold);color:var(--bg);border:0;padding:8px 12px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;font-weight:600}
+.pin-wrap{background:none;border:0}
+.pin{width:14px;height:14px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(201,165,91,.2),0 0 16px rgba(201,165,91,.9);position:relative}
+.pin::after{content:'';position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(201,165,91,.7);animation:pulse 2.2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.4);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.pin.rej{background:var(--red);box-shadow:0 0 0 4px rgba(161,57,42,.2)}
+.pin.rej::after{border-color:rgba(161,57,42,.5)}
+.pin.route{background:var(--sand2);width:10px;height:10px;box-shadow:0 0 0 3px rgba(235,225,203,.15);margin:2px}
+.pin.route::after{display:none}
+.leaflet-control-attribution{background:rgba(9,8,6,.7)!important;color:var(--muted)!important;font-size:10px}
+.leaflet-control-attribution a{color:var(--gold)!important}
+.leaflet-bar a{background:#14120d!important;color:var(--sand)!important;border-color:var(--line)!important}
+.leaflet-tooltip.lbl{background:transparent;border:0;box-shadow:none;color:var(--sand2);font-family:var(--caps);font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+.leaflet-tooltip.lbl::before{display:none}
+@media (max-width:900px){.map-wrap{grid-template-columns:1fr}.map-list{max-height:250px;border-right:0;border-bottom:1px solid var(--line)}#mapCanvas,.map-area{height:470px;min-height:470px}}
+
+/* chronicle */
+.ledger{border-top:1px solid var(--line)}
+.row-l{display:grid;grid-template-columns:150px 1fr;gap:30px;padding:26px 10px;border-bottom:1px solid var(--line);align-items:start;transition:.3s}
+.row-l:hover{background:linear-gradient(90deg,rgba(201,165,91,.07),transparent)}
+.row-l .y{font-family:var(--caps);font-size:1.4rem;color:var(--gold2);line-height:1.1}
+.row-l .y small{display:block;font-family:var(--sans);font-size:.6rem;letter-spacing:.22em;color:var(--muted);margin-top:5px;text-transform:uppercase}
+.row-l h4{font-family:var(--serif);font-size:1.5rem;font-weight:500;margin-bottom:6px;line-height:1.15}
+.row-l p{color:var(--sand2);font-size:.95rem;max-width:780px;line-height:1.65}
+.row-l.now .y{color:var(--green)}
+.row-l.now h4{color:var(--green)}
+@media (max-width:640px){.row-l{grid-template-columns:1fr;gap:8px;padding:22px 0}}
+
+/* why */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.why{background:var(--bg);padding:36px 30px;transition:.3s;position:relative}
+.why:hover{background:var(--bg2)}
+.why svg{width:42px;height:42px;stroke:var(--gold);fill:none;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;margin-bottom:20px}
+.why .k{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px;font-weight:600}
+.why h4{font-family:var(--serif);font-size:1.55rem;font-weight:500;margin-bottom:8px;line-height:1.15}
+.why p{color:var(--sand2);font-size:.92rem;line-height:1.65}
+
+/* verdict */
+.verdict{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start}
+.panel{border:1px solid var(--line);background:var(--bg2);padding:clamp(26px,3.5vw,40px)}
+.panel h3{font-size:1.9rem;font-weight:400;margin-bottom:6px}
+.panel .sub{color:var(--muted);font-size:.82rem;margin-bottom:24px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:transparent;border:1px solid var(--line);color:var(--sand);padding:14px 16px;cursor:pointer;transition:.3s;margin-bottom:10px;position:relative;overflow:hidden;font-size:.94rem;line-height:1.35}
+.opt:hover{border-color:var(--line2);background:rgba(201,165,91,.05)}
+.opt>*{position:relative;z-index:1}
+.opt .k{font-family:var(--caps);color:var(--gold);font-size:.7rem;letter-spacing:.2em;flex:none;width:22px}
+.opt .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(201,165,91,.14);transition:width 1.1s cubic-bezier(.2,.7,.2,1);z-index:0}
+.opt .pct{margin-left:auto;font-family:var(--caps);color:var(--gold2);font-size:.82rem;flex:none}
+.opt.res{cursor:default}
+.opt.mine{border-color:var(--gold)}
+.opt.ok{border-color:var(--green);background:rgba(127,178,134,.12)}
+.opt.bad{border-color:#d26a5a;background:rgba(161,57,42,.12)}
+.opt:disabled{cursor:default;color:var(--sand);opacity:1}
+.small-link{background:none;border:0;color:var(--muted);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;margin-top:10px;text-decoration:underline;text-underline-offset:4px}
+.small-link:hover{color:var(--gold)}
+.quiz .meta{display:flex;justify-content:space-between;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;font-weight:500}
+.quiz .q{font-family:var(--serif);font-size:1.5rem;margin-bottom:18px;line-height:1.25;min-height:3.6rem}
+.quiz .expl{font-size:.86rem;color:var(--sand2);border-left:2px solid var(--gold3);padding:8px 14px;margin:14px 0;display:none}
+.quiz .expl.show{display:block}
+.result{text-align:center;padding:20px 0}
+.result .big{font-family:var(--serif);font-size:4.6rem;color:var(--gold2);line-height:1}
+.result .t{font-family:var(--serif);font-size:1.6rem;margin:10px 0 6px}
+.result p{color:var(--sand2);font-size:.92rem;max-width:380px;margin:0 auto 20px}
+@media (max-width:900px){.verdict{grid-template-columns:1fr}}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--bg2);position:relative;z-index:2}
+.foot{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:40px}
+.foot h5{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
+.foot ul{list-style:none}
+.foot li{color:var(--sand2);font-size:.84rem;margin-bottom:8px;line-height:1.45}
+.foot p{color:var(--muted);font-size:.86rem;line-height:1.65;max-width:420px}
+.foot .brand{margin-bottom:20px}
+.copy{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:50px;padding-top:24px;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:900px){.foot{grid-template-columns:1fr}}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal .bd{position:absolute;inset:0;background:rgba(5,4,3,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.modal .box{position:relative;width:min(880px,100%);max-height:90vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--line2);padding:clamp(28px,4.5vw,56px);animation:up .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.modal .x{position:absolute;top:14px;right:14px;width:44px;height:44px;border:1px solid var(--line);background:var(--bg2);color:var(--sand);cursor:pointer;font-size:1.3rem;transition:.3s;z-index:2}
+.modal .x:hover{background:var(--gold);color:var(--bg)}
+.modal .top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.modal h3{font-size:clamp(2rem,4.2vw,3.2rem);font-weight:300;line-height:1.02;margin:14px 0 8px;letter-spacing:-.01em}
+.modal .place{color:var(--muted);font-size:.84rem;margin-bottom:24px}
+.modal .text{color:var(--sand2);font-size:1.02rem;line-height:1.75}
+.procon{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.procon div{border:1px solid var(--line);padding:20px}
+.procon h4{font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;margin-bottom:12px;font-weight:500}
+.procon .pro h4{color:var(--green)}.procon .con h4{color:#d26a5a}
+.procon ul{list-style:none}
+.procon li{font-size:.9rem;color:var(--sand2);padding-left:18px;position:relative;margin-bottom:8px;line-height:1.5}
+.procon .pro li::before{content:'+';position:absolute;left:0;color:var(--green)}
+.procon .con li::before{content:'–';position:absolute;left:0;color:#d26a5a}
+.modal .meter{margin-top:26px}
+.modal .acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+@media (max-width:640px){.procon{grid-template-columns:1fr}}
+
+/* reveal / misc */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0)*90ms)}
+.reveal.in{opacity:1;transform:none}
+.totop{position:fixed;right:22px;bottom:22px;width:48px;height:48px;border:1px solid var(--line2);background:rgba(9,8,6,.85);color:var(--gold);cursor:pointer;opacity:0;pointer-events:none;transition:.3s;z-index:40;font-size:1.1rem}
+.totop.show{opacity:1;pointer-events:auto}
+.totop:hover{background:var(--gold);color:var(--bg)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent);max-width:1240px;margin:0 auto}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<nav class="nav" id="nav">
+  <a href="#top" class="brand"><svg viewBox="-100 -100 200 200" class="sun-logo" aria-hidden="true"></svg><span><b>Σῆμα</b><small>Tomb of Alexander</small></span></a>
+  <ul id="menu">
+    <li><a class="lnk" href="#dossier" data-spy="dossier">Dossier</a></li>
+    <li><a class="lnk" href="#journey" data-spy="journey">Journey of the Body</a></li>
+    <li><a class="lnk" href="#witnesses" data-spy="witnesses">Witnesses</a></li>
+    <li><a class="lnk" href="#hypotheses" data-spy="hypotheses">Hypotheses</a></li>
+    <li><a class="lnk" href="#map" data-spy="map">Map</a></li>
+    <li><a class="lnk" href="#chronicle" data-spy="chronicle">Chronicle</a></li>
+    <li><a class="lnk" href="#verdict" data-spy="verdict">Verdict</a></li>
+  </ul>
+  <button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-img" aria-hidden="true"></div>
+  <canvas id="dust" aria-hidden="true"></canvas>
+  <svg class="sun-bg" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+  <div class="side-label">ΣΗΜΑ ΑΛΕΞΑΝΔΡΟΥ · 323 BC — <span id="yrNow">2026</span> AD · QUAESTIO APERTA</div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="overline">Dossier No. 323 · Unsolved case</div>
+      <h1>Where does<br><em>Alexander</em> rest?</h1>
+      <p class="lead">The body of the man who conquered the world was for five hundred years the chief relic of Alexandria. It was seen by <b>Caesar, Augustus, and Caracalla</b>. And then it vanished — and for <b><span id="yearsInline">2348</span> years</b> no one has been able to say where the king lies.</p>
+      <div class="btns">
+        <a href="#journey" class="btn solid"><span>Begin the investigation</span></a>
+        <a href="#map" class="btn ghost"><span>Map of hypotheses</span></a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="n"><span data-count="2348" id="yearsStat">0</span></div><div class="l">years of searching</div></div>
+      <div class="stat"><div class="n"><span data-count="140">0</span><sup>+</sup></div><div class="l">official expeditions</div></div>
+      <div class="stat"><div class="n"><span data-count="5">0</span></div><div class="l">Roman rulers saw the body</div></div>
+      <div class="stat"><div class="n"><span data-count="0">0</span></div><div class="l">remains found</div></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><i></i></div>
+</header>
+
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+
+<main>
+<!-- I. DOSSIER -->
+<section id="dossier">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">I</div>
+      <div>
+        <h2>Case <em>materials</em></h2>
+        <p class="lead">What is reliably known — and where the realm of conjecture begins. Briefly about the deceased, the body, and the last place it was seen.</p>
+      </div>
+    </div>
+    <div class="dossier">
+      <div class="file reveal">
+        <div class="stamp">Not found</div>
+        <span class="tag">Identity card · Subject No. 1</span>
+        <dl>
+          <dt>Name</dt><dd class="big">Alexander III of Macedon</dd>
+          <dt>Born</dt><dd>July 356 BC, Pella, Macedon</dd>
+          <dt>Died</dt><dd><b>June 10/11, 323 BC</b>, Babylon, palace of Nebuchadnezzar II. Age — 32</dd>
+          <dt>Cause of death</dt><dd>not established. Malaria, typhoid fever, poisoning, West Nile fever, Guillain–Barré syndrome — only hypotheses</dd>
+          <dt>Condition of the body</dt><dd>embalmed by Egyptian and Chaldean masters. According to Curtius Rufus, it lay for six days in the Babylonian heat without signs of decay</dd>
+          <dt>Last inspection</dt><dd><b>215 AD</b> — Emperor Caracalla, Alexandria, the Soma mausoleum</dd>
+          <dt>The trail breaks off</dt><dd>c. 390–400 AD</dd>
+          <dt>Search attempts</dt><dd>more than 140 official — since the early 19th century</dd>
+          <dt>Status</dt><dd><b>Location unknown</b></dd>
+        </dl>
+        <div style="margin-top:30px" class="days"><span id="daysCounter">—</span><small>days without an answer since death</small></div>
+      </div>
+      <div class="gloss stagger">
+        <div class="term reveal"><b>Soma</b><span class="gr">Σῶμα "body" · Σῆμα "tomb"</span><p>The mausoleum of Alexander in the center of Alexandria, built by Ptolemy IV. A walled complex where the Ptolemies themselves lay around the king. Ancient authors call it by both words.</p></div>
+        <div class="term reveal"><b>Bruchion</b><span class="gr">Βρουχεῖον</span><p>The royal quarter of Alexandria — palaces, the Mouseion, the Library, and the Soma occupied up to a third of the city. Burned under Aurelian in 272, partly submerged beneath the Eastern Harbor.</p></div>
+        <div class="term reveal"><b>Diadochi</b><span class="gr">Διάδοχοι "successors"</span><p>The generals who divided the empire. To them the body of Alexander was political capital: whoever possessed the king was the legitimate heir. That is why a real war was fought over the tomb.</p></div>
+        <div class="term reveal"><b>Catafalque</b><span class="gr">ἁρμάμαξα</span><p>A golden temple on wheels, built for two years in Babylon. Its route and theft are the opening of the whole story.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- II. JOURNEY -->
+<section id="journey">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">II</div>
+      <div>
+        <h2>Journey of the <em>body</em></h2>
+        <p class="lead">From the Babylonian palace to the Alexandrian mausoleum — and onward into oblivion. Scroll: the route on the diagram moves with you.</p>
+      </div>
+    </div>
+    <div class="journey">
+      <aside class="route-panel">
+        <svg viewBox="0 0 640 520" id="routeSvg" role="img" aria-label="Schematic of the route of Alexander's body: Babylon — Damascus — Memphis — Alexandria">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(235,225,203,.05)" stroke-width="1"/></pattern>
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="640" height="520" fill="url(#grid)"/>
+          <g stroke="rgba(127,159,208,.32)" fill="none" stroke-width="1">
+            <path d="M110 250c10-6 20-6 30 0s20 6 30 0 20-6 30 0 20 6 30 0 20-6 30 0 20 6 30 0"/>
+            <path d="M140 272c10-6 20-6 30 0s20 6 30 0 20-6 30 0 20 6 30 0 20-6 30 0"/>
+            <path d="M170 228c10-6 20-6 30 0s20 6 30 0 20-6 30 0 20 6 30 0"/>
+          </g>
+          <text x="230" y="207" class="sea-l">MARE INTERNUM</text>
+          <path class="ghost" d="M400,170 C330,110 200,70 90,70"/>
+          <path class="ghost" d="M300,420 C250,445 170,440 110,410"/>
+          <path id="routePath" class="route-base" d="M560,250 C520,205 460,178 400,170 C330,162 318,330 300,420 C285,395 240,350 215,300"/>
+          <path id="routeFill" class="route-fill" d="M560,250 C520,205 460,178 400,170 C330,162 318,330 300,420 C285,395 240,350 215,300"/>
+          <g class="node ghost-n"><circle cx="90" cy="70" r="4"/><text class="sub" x="90" y="42">Perdiccas' plan</text><text x="90" y="58">Aegae · Macedon</text></g>
+          <g class="node ghost-n"><circle cx="110" cy="410" r="4"/><text x="110" y="436">Siwa · Oracle of Amun</text><text class="sub" x="110" y="452">Alexander's will</text></g>
+          <g class="node" data-n="babylon"><circle cx="560" cy="250" r="5"/><text class="sub" x="560" y="214">death · 323 BC</text><text x="560" y="231">Babylon</text></g>
+          <g class="node" data-n="damascus"><circle cx="400" cy="170" r="5"/><text class="sub" x="400" y="134">interception · 321 BC</text><text x="400" y="151">Damascus · Syria</text></g>
+          <g class="node" data-n="memphis"><circle cx="300" cy="420" r="5"/><text x="340" y="425" style="text-anchor:start">Memphis</text><text class="sub" x="340" y="441" style="text-anchor:start">321 — c. 280 BC</text></g>
+          <g class="node" data-n="alexandria"><circle cx="215" cy="300" r="5"/><text x="200" y="297" style="text-anchor:end">Alexandria</text><text class="sub" x="200" y="313" style="text-anchor:end">from c. 280 BC</text></g>
+          <g id="marker" transform="translate(560,250)"><circle r="18" class="halo"/><circle r="6" class="core"/></g>
+          <g transform="translate(588,62)" fill="none" stroke="rgba(201,165,91,.45)">
+            <circle r="22"/><path d="M0-30V30M-30 0H30" stroke-width=".7"/>
+            <path d="M0-30L6 0L0 30L-6 0Z" fill="rgba(201,165,91,.5)" stroke="none"/>
+            <path d="M-30 0L0 6L30 0L0-6Z" fill="rgba(201,165,91,.22)" stroke="none"/>
+            <text y="-36" text-anchor="middle" style="font-family:var(--caps);font-size:10px;fill:#c9a55b;letter-spacing:2px" stroke="none">N</text>
+          </g>
+        </svg>
+        <div class="route-meta">
+          <div class="yr" id="routeYear">323 BC</div>
+          <div class="loc">Location of the body<b id="routeLoc">Babylon</b></div>
+        </div>
+      </aside>
+      <div class="steps" id="steps">
+        <article class="step" data-node="babylon" data-year="323 BC" data-loc="Babylon">
+          <div class="when">323 BC · Babylon</div>
+          <h3>Death in the palace of Nebuchadnezzar</h3>
+          <p>After ten days of fever Alexander died without naming an undisputed heir. While the generals divided power, the body lay almost a week unattended in the summer heat — and, according to Curtius Rufus, showed no signs of decay. Egyptian and Chaldean embalmers prepared it for the long road; by one version, the body was placed in honey.</p>
+          <span class="src">Curtius Rufus X, 10 · Arrian VII, 25–28 · Plutarch, "Alexander", 76–77</span>
+        </article>
+        <article class="step" data-node="babylon" data-year="323–321 BC" data-loc="Babylon">
+          <div class="when">323–321 BC · Babylon</div>
+          <h3>A golden temple on wheels</h3>
+          <p>For almost two years the engineer Arrhidaeus built the catafalque: an Ionic portico of gold, a vaulted roof of golden scales set with gems, golden bells and painted panels — Alexander in a chariot, war elephants, a fleet. The cart was drawn by 64 mules in gilded crowns, and ahead of them walked diggers, leveling the road.</p>
+          <span class="src">Diodorus Siculus XVIII, 26–28</span>
+        </article>
+        <article class="step" data-node="damascus" data-year="321 BC" data-loc="Syria, near Damascus">
+          <div class="when">321 BC · Syria</div>
+          <h3>The theft of the century</h3>
+          <p>The regent Perdiccas ordered the body taken to Aegae, the burial place of the Macedonian kings — while Alexander himself, by tradition, had asked to be buried at the oracle of Amun in Siwa. But in Syria the cortege was met by Ptolemy with an army. He won over the escort and led the king away to Egypt: possession of the founder's body gave the dynasty legitimacy. Perdiccas set off in pursuit, but died by the Nile at the hands of his own officers.</p>
+          <span class="src">Diodorus XVIII, 28 · Pausanias I, 6 · Arrian, "Events after Alexander"</span>
+        </article>
+        <article class="step" data-node="memphis" data-year="321 — c. 280 BC" data-loc="Memphis">
+          <div class="when">321 — c. 280 BC · Memphis</div>
+          <h3>Forty years in the ancient capital</h3>
+          <p>Ptolemy buried Alexander in Memphis "according to Macedonian rite" — probably in the Saqqara necropolis, near the Serapeum. Andrew Chugg believes the coffin was the unused sarcophagus of the last pharaoh, Nectanebo II. Here, too, the former bodyguard wrote his memoirs of the campaigns — the main source for Arrian.</p>
+          <span class="src">Pausanias I, 6–7 · Curtius Rufus X, 10</span>
+        </article>
+        <article class="step" data-node="alexandria" data-year="c. 280 BC" data-loc="Alexandria">
+          <div class="when">c. 280 BC · Alexandria</div>
+          <h3>Moving to the city of Alexander</h3>
+          <p>Ptolemy II Philadelphus transferred the body to the new capital that the king himself had founded. The first tomb probably stood in the royal quarter of the Bruchion. Alexander became the divine patron of the city and the dynasty: documents across Egypt were dated by the name of his priest.</p>
+          <span class="src">Pausanias I, 7 · Strabo XVII, 1, 8</span>
+        </article>
+        <article class="step" data-node="alexandria" data-year="c. 215 BC" data-loc="Alexandria · Soma">
+          <div class="when">c. 215 BC · Alexandria</div>
+          <h3>Soma: the dynastic mausoleum</h3>
+          <p>Ptolemy IV Philopator built the Soma in the center of the city — a walled complex where the tombs of the Ptolemies were arranged around Alexander's tomb. According to Strabo, it was "part of the royal palaces." The Street of the Soma crossed the Canopic Way — the main avenue of the city, and that crossroads is still being sought.</p>
+          <span class="src">Zenobius III, 94 · Strabo XVII, 1, 8 · Achilles Tatius V, 1</span>
+        </article>
+        <article class="step" data-node="alexandria" data-year="89 BC" data-loc="Alexandria · Soma">
+          <div class="when">89 BC · Alexandria</div>
+          <h3>Gold into coins</h3>
+          <p>Ptolemy X Alexander I, in debt to his mercenaries, melted down the golden sarcophagus into coin and replaced it with a glass — crystal — one. The Alexandrians drove out the sacrilegious king, but the transparent coffin remained: from then on, every visitor could see Alexander himself.</p>
+          <span class="src">Strabo XVII, 1, 8</span>
+        </article>
+        <article class="step" data-node="alexandria" data-year="48–30 BC" data-loc="Alexandria · Soma">
+          <div class="when">48–30 BC · Alexandria</div>
+          <h3>Caesar and Augustus at the tomb</h3>
+          <p>Julius Caesar descended into the tomb in 48 BC while pursuing Pompey. Octavian in 30 BC, having conquered Egypt, ordered the sarcophagus brought out, placed a golden crown on it, strewed the body with flowers — and, according to Cassius Dio, touching the face, broke off a piece of the nose. He refused to look at the tombs of the Ptolemies: "I wanted to see a king, not corpses."</p>
+          <span class="src">Lucan X · Suetonius, "Augustus", 18 · Cassius Dio LI, 16</span>
+        </article>
+        <article class="step" data-node="alexandria" data-year="40–215 AD" data-loc="Alexandria · Soma">
+          <div class="when">40–215 AD · Alexandria</div>
+          <h3>The last pilgrims</h3>
+          <p>Caligula took Alexander's breastplate from the tomb and wore it in public. Septimius Severus in 200 AD sealed the crypt, hiding secret books inside. In 215 AD Caracalla, who considered himself a new Alexander, took off his purple cloak, rings, and belt and laid them on the tomb. This is the last reliable testimony about the body.</p>
+          <span class="src">Suetonius, "Caligula", 52 · Cassius Dio LXXVI, 13 · Herodian IV, 8</span>
+        </article>
+        <article class="step" data-node="alexandria" data-year="272–400 AD" data-loc="Alexandria · ?">
+          <div class="when">272–400 AD · Alexandria</div>
+          <h3>Disappearance</h3>
+          <p>Under Aurelian in 272 the Bruchion burned. In 365 the city was struck by a tsunami. In 391, by the edicts of Theodosius, Christians destroyed the Serapeum. Around 390 Libanius still mentions the body of Alexander on display, and around 400 John Chrysostom already asks: "Where is the tomb of Alexander?" The trail breaks off.</p>
+          <span class="src">Ammianus Marcellinus XXII, 16 · Libanius, Oration XLIX · John Chrysostom, Homily XXVI</span>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- III. WITNESSES -->
+<section id="witnesses">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">III</div>
+      <div>
+        <h2>Witness <em>testimony</em></h2>
+        <p class="lead">Ten ancient authors who saw the tomb themselves or wrote in the immediate aftermath. Their phrases are the only "evidence" the investigation possesses.</p>
+      </div>
+    </div>
+    <div class="quotes" id="quotes"></div>
+    <div class="qnav"><span class="hint">← Scroll horizontally →</span><div><button id="qPrev" aria-label="Back">←</button><button id="qNext" aria-label="Forward">→</button></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- IV. HYPOTHESES -->
+<section id="hypotheses">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">IV</div>
+      <div>
+        <h2>Nine <em>versions</em></h2>
+        <p class="lead">From near-consensus to frankly fantastic. Click a card — inside are the arguments for and against, the history of the search, and a point on the map.</p>
+      </div>
+    </div>
+    <div class="filters" id="filters">
+      <button class="on" data-f="all">All versions</button>
+      <button data-f="alex">Alexandria</button>
+      <button data-f="out">Beyond the city</button>
+      <button data-f="rejected">Rejected</button>
+    </div>
+    <div class="cards stagger" id="cards"></div>
+    <p class="note">* The "plausibility index" is a subjective editorial assessment reflecting how far the hypothesis is supported by the sources and scholarly literature. It is not an archaeological fact: none of the versions has been confirmed by a find.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- V. MAP -->
+<section id="map-section">
+  <div class="wrap" id="map">
+    <div class="sec-head reveal">
+      <div class="num">V</div>
+      <div>
+        <h2>Map of <em>searches</em></h2>
+        <p class="lead">The route of the funeral procession and all the points where the tomb was sought, found, and "found." Choose a place in the list — the map will fly to it.</p>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <div class="map-list" id="mapList"></div>
+      <div class="map-area">
+        <div id="mapCanvas"></div>
+        <div class="map-ctl"><button class="on" data-layer="dark">Scheme</button><button data-layer="sat">Satellite</button><button data-fly="alex">Alexandria</button><button data-fly="all">Whole route</button></div>
+        <div class="map-fallback" id="mapFallback"><div><p style="font-family:var(--serif);font-size:1.6rem;color:var(--gold2);margin-bottom:8px">The map failed to load</p><p>No connection to the map server. The location list on the left still opens the hypothesis cards.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VI. CHRONICLE -->
+<section id="chronicle">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">VI</div>
+      <div>
+        <h2>Chronicle of <em>searches</em></h2>
+        <p class="lead">For fifteen hundred years people have searched for the tomb: medieval pilgrims, Napoleon's scholars, Schliemann, an obsessed waiter, and modern archaeologists with ground-penetrating radar.</p>
+      </div>
+    </div>
+    <div class="ledger stagger" id="ledger"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VII. WHY -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">VII</div>
+      <div>
+        <h2>Why it was <em>not found</em></h2>
+        <p class="lead">The most famous mausoleum of antiquity could not simply dissolve. But Alexandria did almost everything to make it happen.</p>
+      </div>
+    </div>
+    <div class="why-grid stagger">
+      <div class="why reveal"><svg viewBox="0 0 32 32"><path d="M3 24l5-8 5 11 5-14 5 9 6-6"/><path d="M2 29h28"/></svg><span class="k">Reason 01</span><h4>Earthquakes and subsidence</h4><p>Alexandria stands on a subsiding coast: over two millennia the shoreline has dropped 6–8 meters. The earthquakes of 365, 956, 1303, and 1323 brought down the Pharos — and probably everything still standing in the royal quarter.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 32 32"><path d="M2 26c4 0 4-4 8-4s4 4 8 4 4-4 8-4 4 4 6 4"/><path d="M2 18c4 0 4-4 8-4s4 4 8 4 4-4 8-4 4 4 6 4"/><path d="M8 10c4-6 12-6 16 0"/></svg><span class="k">Reason 02</span><h4>The tsunami of July 21, 365</h4><p>Ammianus Marcellinus describes how the sea retreated and then a wave threw ships onto the roofs of houses. Thousands of Alexandrians died; the coastal Bruchion was devastated. The anniversary of the catastrophe was still observed in the city a century later.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 32 32"><path d="M16 3c2 6 8 8 8 15a8 8 0 0 1-16 0c0-4 2-6 3-8 0 3 1 5 3 6-1-5 1-10 2-13z"/></svg><span class="k">Reason 03</span><h4>Wars and a change of faith</h4><p>In 272 Aurelian burned the royal quarter while suppressing a revolt. In 391 Christians destroyed the Serapeum. The tomb of a deified pagan in the center of the capital of Egyptian Christianity was doomed — either destroyed or hidden.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 32 32"><path d="M16 4l12 6-12 6L4 10z"/><path d="M4 16l12 6 12-6"/><path d="M4 22l12 6 12-6"/></svg><span class="k">Reason 04</span><h4>A city upon a city</h4><p>Ancient layers lie 8–12 meters beneath modern streets, below the water table. Above them is the dense development of a city of five million. One can dig only on rare vacant lots and in courtyards.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 32 32"><rect x="3" y="18" width="10" height="10"/><rect x="13" y="18" width="10" height="10"/><rect x="8" y="8" width="10" height="10"/><path d="M23 18l6 10M19 8l9 0"/></svg><span class="k">Reason 05</span><h4>The stone went into the walls</h4><p>Marble and granite from ancient buildings were for centuries burned into lime and relaid in fortresses and mosques. Fort Qaitbay is built of blocks from the Pharos lighthouse. The Soma was most likely dismantled in the same way — stone by stone.</p></div>
+      <div class="why reveal"><svg viewBox="0 0 32 32"><path d="M9 3h14M9 29h14M10 3c0 8 6 10 6 13s-6 5-6 13M22 3c0 8-6 10-6 13s6 5 6 13"/></svg><span class="k">Reason 06</span><h4>Oblivion</h4><p>The medieval city shrank to the isthmus by the harbor, and the old center became a wasteland. By the time Napoleon arrived in 1798, some eight thousand people lived in Alexandria — and no one any longer remembered where the palaces of the Ptolemies had stood.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VIII. VERDICT -->
+<section id="verdict">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="num">VIII</div>
+      <div>
+        <h2>Your <em>verdict</em></h2>
+        <p class="lead">Jurors, you have reviewed the case materials. Time to vote — and to check how attentively you have read.</p>
+      </div>
+    </div>
+    <div class="verdict">
+      <div class="panel reveal" id="poll">
+        <h3>Where, in your opinion, is the tomb?</h3>
+        <p class="sub">Demo poll: results are stored only in your browser.</p>
+        <div id="pollBody"></div>
+      </div>
+      <div class="panel quiz reveal" id="quiz">
+        <h3>The investigator's check</h3>
+        <p class="sub">Six questions on the case materials.</p>
+        <div id="quizBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a href="#top" class="brand"><svg viewBox="-100 -100 200 200" class="sun-logo" aria-hidden="true"></svg><span><b>Σῆμα</b><small>Tomb of Alexander</small></span></a>
+        <p>An interactive dossier on the longest archaeological hunt in history. All dates and quotations are checked against the ancient sources; the reconstructions and the "plausibility index" are the editorial interpretation.</p>
+      </div>
+      <div>
+        <h5>Ancient sources</h5>
+        <ul>
+          <li>Diodorus Siculus. The Library of History, XVIII</li>
+          <li>Strabo. Geography, XVII, 1</li>
+          <li>Quintus Curtius Rufus. The History of Alexander, X</li>
+          <li>Pausanias. Description of Greece, I, 6–7</li>
+          <li>Suetonius. The Lives of the Twelve Caesars</li>
+          <li>Cassius Dio. Roman History, LI; LXXVI</li>
+          <li>Herodian. History of the Empire, IV</li>
+          <li>Lucan. Pharsalia, X · Ammianus Marcellinus, XXII; XXVI</li>
+          <li>John Chrysostom. Homilies on 2 Corinthians, XXVI</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Modern scholarship</h5>
+        <ul>
+          <li>A. Chugg. The Lost Tomb of Alexander the Great (2004); The Quest for the Tomb of Alexander the Great (2012)</li>
+          <li>N. J. Saunders. Alexander's Tomb: The Two-Thousand Year Obsession (2006)</li>
+          <li>P. M. Fraser. Ptolemaic Alexandria (1972)</li>
+          <li>A. Adriani. La tomba di Alessandro (2000)</li>
+          <li>J.-Y. Empereur. Alexandria Rediscovered (1998)</li>
+          <li>J. McKenzie. The Architecture of Alexandria and Egypt (2007)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy"><span>Σῆμα · Case No. 323 · Open</span><span>Pure HTML · CSS · JavaScript, a single file</span><span>Photo: Pexels</span></div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="bd" data-close></div>
+  <div class="box" role="dialog" aria-modal="true">
+    <button class="x" data-close aria-label="Close">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<button class="totop" id="totop" aria-label="Back to top">↑</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+/* ====================== DATA ====================== */
+const YEAR = new Date().getFullYear();
+const YEARS_SINCE = YEAR + 322;
+
+const HYP = [
+ {id:'nabi',n:'01',title:'The Nabi Daniel Mosque',place:'Alexandria · the crossroads of Horreya and Nabi Daniel streets',tag:'alex',status:'Traditional version',badge:'gold',score:72,coords:[31.1968,29.9040],zoom:16,
+  summary:'The classic localization of the Soma — at the intersection of the two main streets of the ancient city, the Canopic Way and the Street of the Soma. Here, beneath the 18th-century mosque, a crystal sarcophagus has been "seen" since 1850.',
+  details:'The ancient authors — Strabo, Achilles Tatius, Zenobius — place the Soma "in the center of the city," inside the royal quarter, at the crossing of the main thoroughfares. The reconstruction of the plan of ancient Alexandria made by the astronomer Mahmoud Bey al-Falaki in 1865 brought this point to the Nabi Daniel Mosque. As early as 1850 the dragoman of the Russian consulate, Ambrosios Skilitsis, claimed that in the crypt of the mosque, through a crack in the door, he had seen a glass sarcophagus with a body in a diadem, surrounded by heaps of papyri. In 1888 Heinrich Schliemann asked permission to dig beneath the mosque — and was refused. The excavations of Evaristo Breccia (1907) and later surveys of the crypt revealed nothing older than late Roman times, but the tradition holds: each new generation of archaeologists returns to this crossroads.',
+  pro:['Matches the descriptions of Strabo and Achilles Tatius: city center, intersection of the main streets','The name "Daniel" may have overlain the Muslim veneration of Iskander Dhul-Qarnayn','Leo Africanus in the 16th century saw in Alexandria a chapel with the "tomb of Alexander" to which pilgrims went'],
+  con:['Skilitsis\' account has never been confirmed and looks like a hoax','The crypt of the mosque has been studied: nothing Hellenistic','Al-Falaki\'s street grid is disputed: the true crossroads may have been hundreds of meters away']},
+ {id:'shallalat',n:'02',title:'The Shallalat Gardens',place:'Alexandria · eastern part of the royal quarter',tag:'alex',status:'Active excavations',badge:'green',score:68,coords:[31.2042,29.9118],zoom:16,
+  summary:'Since 1998 the Greek archaeologist Calliope Limneos-Papakosta has been digging here at a depth of more than 10 meters. A marble statue of Alexander, a Hellenistic road, and the foundations of a monumental building have been found.',
+  details:'The site lies within the ancient Bruchion — the royal quarter where Strabo placed the Soma. In 2009 the mission of the Hellenic Institute for the Study of Alexandrian Civilization discovered an early Hellenistic marble statue of Alexander (now in the National Museum of Alexandria). Then came a road paved with limestone from Ptolemaic times and the remains of a large public building whose foundation descends below the water table. Papakosta is convinced that she is within a hundred meters of the Soma and calls her excavation "the work of my life." The work continues; film crews from National Geographic have followed it.',
+  pro:['The only systematic multi-year excavation inside the royal quarter','A Ptolemaic horizon has been found: a road, monumental foundations, a statue of Alexander','The location agrees with the reconstruction of the royal quarter according to Strabo'],
+  con:['Not a single inscription directly connected with the Soma','Monumental buildings in the royal quarter could have been anything — from a temple to a gymnasium','Groundwater makes excavation deeper almost impossible']},
+ {id:'alabaster',n:'03',title:'The Alabaster Tomb',place:'Alexandria · the Latin Cemetery (Terra Santa)',tag:'alex',status:'Academic hypothesis',badge:'gold',score:55,coords:[31.1952,29.9182],zoom:16,
+  summary:'A chamber of huge alabaster blocks, found in 1907, is the only monument in Alexandria of the Macedonian funerary type. Achille Adriani considered it the antechamber of Alexander\'s tomb.',
+  details:'The structure of monolithic alabaster slabs (internal space about 5 × 3 m) was opened by Evaristo Breccia. Its form and technique are characteristic of Macedonian royal tombs of the late 4th — early 3rd century BC, that is, of the early Ptolemaic era. The Italian archaeologist Achille Adriani, director of the Graeco-Roman Museum, in his posthumously published book "La tomba di Alessandro" (2000) suggested that this was the antechamber of the first Alexandrian tomb of Alexander, built even before the Soma of Philopator. The monument stands in the garden of the cemetery, surrounded by modern buildings; full-scale excavation around it is impossible.',
+  pro:['A Macedonian-type tomb in Alexandria is unique','Dating — the early Ptolemaic era','Location — in the zone attributed to the royal quarter'],
+  con:['Could have belonged to any of the first Ptolemies or to the nobility','No inscriptions and no funerary inventory','For the "tomb of a god" it looks too modest']},
+ {id:'harbour',n:'04',title:'The Floor of the Eastern Harbor',place:'Alexandria · the sunken royal quarter',tag:'alex',status:'Indirect hypothesis',badge:'grey',score:35,coords:[31.2075,29.8965],zoom:15,
+  summary:'Frank Goddio\'s underwater expeditions have found sunken palaces, the island of Antirhodos, and the colonnades of the royal quarter. Part of the Bruchion went under water — possibly along with what remained of the Soma.',
+  details:'A series of earthquakes and the gradual subsidence of the coastline (by 6–8 meters) submerged the northern part of the royal quarter in the waters of the Eastern Harbor. Since 1992 expeditions of the European Institute of Underwater Archaeology have mapped pavements, colonnades, sphinxes, and the foundations of palace buildings. However, Strabo clearly placed the Soma deep within the palace complex, not on the shore, so most scholars believe the mausoleum remained on land — beneath the modern city.',
+  pro:['The proven submersion of part of the Bruchion','Underwater, Hellenistic layers are preserved better than beneath the city'],
+  con:['Strabo does not connect the Soma with the shoreline','Among the underwater finds there is nothing funerary']},
+ {id:'memphis',n:'05',title:'Memphis and Saqqara',place:'Egypt · the Saqqara necropolis, Serapeum',tag:'out',status:'The first-burial version',badge:'gold',score:25,coords:[29.8742,31.2159],zoom:13,
+  summary:'For almost forty years the body of Alexander rested in Memphis. Andrew Chugg believes it lay in the sarcophagus of Pharaoh Nectanebo II, and that the semicircle of Greek statues by the Serapeum marks the site of the tomb.',
+  details:'Pausanias reports that Ptolemy buried Alexander in Memphis "according to Macedonian rite." The British researcher Andrew Chugg drew attention to the sarcophagus of Nectanebo II — the last Egyptian pharaoh, who fled from the Persians and never used his own tomb. This sarcophagus was found in Alexandria, where in the Middle Ages it was venerated as "Alexander\'s bath"; according to Chugg, Ptolemy used it for a temporary burial and then transported it to the capital together with the body. Near the Serapeum at Saqqara stands the "exedra of the philosophers" — a semicircle of Hellenistic statues of Greek poets and sages, strange for an Egyptian necropolis; it too is connected with the Memphite mausoleum. Some go further and suppose that not everything — or perhaps nothing — was transferred to Alexandria.',
+  pro:['A documented place of the first burial','The sarcophagus of Nectanebo II did indeed end up in Alexandria — empty','The Greek exedra by the Serapeum is an anomaly for Saqqara'],
+  con:['The ancient authors are unanimous: the body was transferred to Alexandria','The Roman emperors saw the body in Alexandria','The sarcophagus is only circumstantial evidence']},
+ {id:'venice',n:'06',title:'St. Mark\'s Basilica',place:'Venice, Italy · the Basilica di San Marco',tag:'out',status:'A bold hypothesis',badge:'blue',score:15,coords:[45.4345,12.3397],zoom:16,
+  summary:'In 828 Venetian merchants took the relics of St. Mark from Alexandria, hiding them under pork carcasses. Andrew Chugg has suggested that under the guise of the evangelist the body of Alexander left the city.',
+  details:'According to Chugg\'s hypothesis (2004), at the end of the 4th century, when Christians were smashing pagan sanctuaries, the mummy of Alexander was hidden, passed off as the remains of St. Mark — the body of the evangelist had, by tradition, suffered as early as the attempt to burn it in 68 AD. The chronology fits: information about the tomb of Alexander breaks off around 390–400, and at the very same time a venerated tomb of Mark appears in Alexandria. Chugg also points to a block with a relief of a Macedonian shield with a star, found in the masonry of the basilica and probably brought from Alexandria. The relics in San Marco were examined in 1811 but never scientifically studied. The hypothesis could be tested by an examination of the remains, to which Venice does not consent.',
+  pro:['The chronological coincidence of the disappearance of one relic and the appearance of another','A fragment of a Hellenistic relief with a Macedonian shield in the basilica','Theoretically testable: the remains exist'],
+  con:['No written indication of a substitution','4th-century Christians would hardly have saved a "pagan idol"','Most historians regard the version as speculation']},
+ {id:'siwa',n:'07',title:'The Siwa Oasis',place:'Egypt · the Libyan Desert, Maraki',tag:'rejected',status:'Rejected',badge:'red',score:5,coords:[29.2032,25.5196],zoom:11,
+  summary:'In 1995 Liana Souvaltzi announced that she had found the tomb of Alexander by the oracle of Amun — where he himself had asked to be buried. Greek and Egyptian commissions pronounced the find a mistake.',
+  details:'Alexander did indeed wish to rest at the sanctuary of Amun in Siwa (Diodorus, Curtius Rufus, and Justin write of this), and it was formally there that Ptolemy was taking the body when he "intercepted" the cortege. The Greek researcher Liana Souvaltzi had been excavating at Maraki since 1989 and in January 1995 announced the discovery of a Macedonian tomb with inscriptions mentioning Alexander and Ptolemy. A commission of the Greek Ministry of Culture refuted her reading: the structure turned out to be late antique, and the "inscriptions" — fragments containing no names. In 1996 Egypt revoked the excavation permit.',
+  pro:['Corresponds to the will of Alexander himself','The symbolic significance of the place for the Ptolemies'],
+  con:['Refuted by experts of both countries','The ancient authors speak unambiguously of Memphis and Alexandria','The layout of the object is not Macedonian']},
+ {id:'amphipolis',n:'08',title:'The Kasta Hill',place:'Amphipolis, Greece',tag:'rejected',status:'Officially excluded',badge:'red',score:3,coords:[40.8327,23.8641],zoom:14,
+  summary:'The giant tomb of 2014 (perimeter 497 m) gave rise to a surge of hope. But the dating and the finds point to a monument of the late 4th century BC, built probably for Hephaestion — not for Alexander.',
+  details:'The excavations of Katerina Peristeri revealed the largest funerary complex in Greece, with sphinxes, caryatids, and a mosaic of the abduction of Persephone. Monograms of Hephaestion on the blocks suggested that this was the heroon of Alexander\'s closest friend, commissioned by the king himself. In the crypt were found the remains of five people, including a woman over 60 — possibly Olympias, Alexander\'s mother. The Greek Ministry of Culture excluded the version of the burial of Alexander himself: his body never left Egypt.',
+  pro:['The scale and quality are worthy of a king','Macedon is the homeland of the dynasty and the original destination of the cortege'],
+  con:['The body of Alexander was taken to Egypt, where it was seen for another 500 years','The inscriptions point to Hephaestion','The dating leaves no "window" for a reburial']},
+ {id:'istanbul',n:'09',title:'The "Alexander Sarcophagus"',place:'Istanbul · the Archaeological Museum',tag:'rejected',status:'Myth',badge:'grey',score:0,coords:[41.0116,28.9811],zoom:16,
+  summary:'The magnificent marble sarcophagus from Sidon (found in 1887) is decorated with scenes of Alexander\'s battles — but it belonged to Abdalonymus, the king of Sidon whom Alexander placed on the throne.',
+  details:'One of the masterpieces of Hellenistic sculpture, the sarcophagus from the royal necropolis of Sidon is called "Alexander\'s" only because of its images: on the reliefs the king in a lion helmet fights the Persians at Issus and hunts lions. The owner of the sarcophagus is generally thought to have been Abdalonymus — the ruler of Sidon appointed by Alexander. The body of Alexander never left Egypt under the Ptolemies, and by no version was he buried in Sidon. Nevertheless, tourists come to Istanbul every year "to the tomb of Alexander."',
+  pro:['The only "sarcophagus of Alexander" that can be seen today'],
+  con:['Attribution to Abdalonymus is universally accepted','Contradicts all the ancient sources']}
+];
+
+const ROUTE_PTS = [
+ {id:'r-babylon',title:'Babylon',sub:'Place of death · 323 BC',coords:[32.5364,44.4208],zoom:11,cls:'route',text:'The palace of Nebuchadnezzar II. Here on June 10/11, 323 BC Alexander died; here for two years the golden catafalque was built.'},
+ {id:'r-damascus',title:'Damascus',sub:'Interception of the cortege · 321 BC',coords:[33.5138,36.2765],zoom:9,cls:'route',text:'Somewhere in Syria Ptolemy met the funeral procession and led it away to Egypt.'},
+ {id:'r-memphis',title:'Memphis',sub:'First burial · 321 — c. 280 BC',coords:[29.8447,31.2506],zoom:12,cls:'route',text:'The ancient capital of Egypt. For about forty years the body rested here "according to Macedonian rite."'},
+ {id:'r-alex',title:'Alexandria',sub:'Soma · last inspection 215 AD',coords:[31.2001,29.9187],zoom:13,cls:'route',text:'The city of Alexander. Here stood the Soma mausoleum, where the tomb was seen by Caesar, Augustus, Caligula, Severus, and Caracalla.'},
+ {id:'r-aigai',title:'Aegae (Vergina)',sub:'Where it was being taken by order of Perdiccas',coords:[40.4833,22.3167],zoom:13,cls:'route',text:'The burial place of the Macedonian kings. The body never reached here — but Philip II, Alexander\'s father, lies here.'}
+];
+
+const QUOTES = [
+ {w:'Diodorus Siculus',work:'"The Library of History", XVIII, 26–27',y:'1st c. BC',m:'Δ',q:'A canopy of golden scales studded with precious stones was crowned by a golden olive wreath… The cart was drawn by sixty-four mules, each wearing a gilded crown, with golden bells at their cheeks.',c:'Description of the catafalque built for two years in Babylon. Diodorus adds that the inhabitants of every city along the way ran out to see it.'},
+ {w:'Strabo',work:'"Geography", XVII, 1, 8',y:'c. 20 AD',m:'Σ',q:'Part of the royal palaces is also the so-called Sema — the enclosure in which are the tombs of the kings and of Alexander… The body lies there even now, but no longer in the same sarcophagus: the present one is of glass, whereas Ptolemy placed him in a golden one.',c:'The only direct description of the Soma complex by an eyewitness who lived in Alexandria in 25–20 BC.'},
+ {w:'Lucan',work:'"Pharsalia", X, 19–22',y:'c. 65 AD',m:'L',q:'Greedily he descended into the cave dug for the tomb, where lies the mad offspring of Pella\'s Philip — the lucky brigand whom death carried off, avenging the world.',c:'The poet describes Caesar\'s visit in 48 BC. The word "cave" has made archaeologists search for a subterranean crypt.'},
+ {w:'Suetonius',work:'"The Deified Augustus", 18',y:'c. 120 AD',m:'S',q:'He inspected the body of Alexander the Great, whose coffin he ordered brought out of the sanctuary: in token of reverence he placed a golden crown upon it and strewed the body with flowers. Asked whether he wished to see the tomb of the Ptolemies as well, he replied that he had wanted to see a king, not corpses.',c:'Augustus in Alexandria, August 30 BC. The phrase implies that the tombs of the Ptolemies were separate from Alexander\'s coffin.'},
+ {w:'Cassius Dio',work:'"Roman History", LI, 16',y:'c. 220 AD',m:'Δ',q:'He inspected the body of Alexander and even touched it, so that, they say, a piece of the nose broke off.',c:'A legendary detail of the same visit by Augustus. The nose is the first recorded "loss" of the mummy.'},
+ {w:'Suetonius',work:'"Gaius Caligula", 52',y:'c. 120 AD',m:'S',q:'He often appeared in public… in the breastplate of Alexander the Great, taken from his tomb.',c:'Caligula, c. 40 AD. The tomb also served as a treasury of relics, accessible to emperors.'},
+ {w:'Cassius Dio',work:'"Roman History", LXXVI, 13',y:'c. 220 AD',m:'Δ',q:'He sealed the tomb of Alexander so that no one might henceforth either see his body or read what was written in the books that he had collected and placed there.',c:'Septimius Severus, 199/200 AD. The emperor was fond of magic and hid secret books from Egyptian temples in the crypt.'},
+ {w:'Herodian',work:'"History of the Empire", IV, 8, 9',y:'c. 240 AD',m:'H',q:'Taking off his purple cloak, his rings with precious stones, his belts, and everything of value he had, he laid it upon the tomb.',c:'Caracalla, 215 AD — the last reliable testimony about the tomb and the body.'},
+ {w:'Ammianus Marcellinus',work:'"Res Gestae", XXII, 16, 15',y:'c. 390 AD',m:'A',q:'Under Aurelian, when the quarrels of the citizens grew into destructive wars, the city lost the greater part of the quarter called Bruchion, which had long been the dwelling-place of distinguished men.',c:'272 AD. The Soma, according to Strabo, stood precisely in the royal quarter — the Bruchion.'},
+ {w:'John Chrysostom',work:'"Homilies on 2 Corinthians", XXVI',y:'c. 400 AD',m:'Ι',q:'Tell me, where is the tomb of Alexander? Show it to me and name the day on which he died.',c:'A rhetorical question of the Christian preacher: by the end of the 4th century no one in Alexandria could any longer point to the place.'}
+];
+
+const CHRON = [
+ {y:'c. 400',s:'AD',t:'The trail breaks off',d:'In a sermon John Chrysostom asks where the tomb of Alexander is — and gets no answer. Libanius mentions the body for the last time around 390.'},
+ {y:'828',s:'AD',t:'The relics of St. Mark sail to Venice',d:'The merchants Buono of Malamocco and Rustico of Torcello take the body of the evangelist from Alexandria, hiding it under pork carcasses. Twelve hundred years later Andrew Chugg will suspect a substitution.'},
+ {y:'1517',s:'',t:'The chapel of Iskander',d:'Leo Africanus describes in Alexandria "a small house like a chapel" with a tomb that Muslims venerate as the grave of Alexander and to which pilgrims flock.'},
+ {y:'1798',s:'',t:'"Alexander\'s Bath"',d:'Scholars of Napoleon\'s expedition find in the Attarin Mosque a huge sarcophagus venerated as the coffin of Alexander. In 1801 the British seize it; later the deciphered hieroglyphs will show that it belonged to Pharaoh Nectanebo II.'},
+ {y:'1850',s:'',t:'The crystal coffin beneath the mosque',d:'The dragoman of the Russian consulate, Ambrosios Skilitsis, declares that in the crypt of the Nabi Daniel Mosque, through a crack, he saw a glass sarcophagus with a body in a diadem and heaps of papyri. No one was able to verify the story.'},
+ {y:'1865',s:'',t:'Al-Falaki\'s plan',d:'The astronomer Mahmoud Bey al-Falaki, commissioned by Napoleon III, reconstructs the street grid of ancient Alexandria and places the Soma at the crossroads of the present Horreya and Nabi Daniel streets.'},
+ {y:'1888',s:'',t:'Schliemann refused',d:'The discoverer of Troy asks permission to dig by the Nabi Daniel Mosque. The religious authorities of Alexandria do not allow the shrine to be disturbed.'},
+ {y:'1907',s:'',t:'The alabaster tomb',d:'Evaristo Breccia opens in the Latin Cemetery a chamber of monolithic alabaster blocks — the only Macedonian-type tomb in the city. Later Achille Adriani will call it the antechamber of Alexander\'s tomb.'},
+ {y:'1960s',s:'',t:'The obsessed waiter',d:'The Greek Stelios Koumoutsos, a waiter in an Alexandrian café, spends all his savings on excavations according to his own "maps" and obtains several official permits. The result is zero; the fame is worldwide.'},
+ {y:'1992',s:'',t:'The royal quarter underwater',d:'Frank Goddio begins underwater mapping of the Eastern Harbor and discovers the sunken palaces, the island of Antirhodos, sphinxes, and the colonnades of the Bruchion.'},
+ {y:'1995',s:'',t:'Sensation at Siwa',d:'Liana Souvaltzi announces the discovery of Alexander\'s tomb by the oracle of Amun. A few weeks later a commission of the Greek Ministry of Culture refutes the reading of the inscriptions; Egypt revokes the license.'},
+ {y:'1998',s:'',t:'Excavations begin at Shallalat',d:'Calliope Limneos-Papakosta obtains a plot in the Shallalat Gardens — inside the ancient royal quarter — and begins the longest systematic search for the Soma in history.'},
+ {y:'2004',s:'',t:'The Venetian trail',d:'Andrew Chugg\'s book "The Lost Tomb of Alexander the Great" is published: the sarcophagus of Nectanebo II, the Memphite tomb, and the hypothesis of a body beneath the altar of San Marco.'},
+ {y:'2009',s:'',t:'A statue from beneath the earth',d:'At Shallalat an early Hellenistic marble statue of Alexander is found — the first weighty confirmation that the excavation is being conducted in the royal quarter.'},
+ {y:'2014',s:'',t:'Amphipolis',d:'The discovery of the giant Kasta Hill causes an "Alexander fever." Soon it becomes clear: the monument is probably dedicated to Hephaestion; Alexander is not in it.'},
+ {y:'2019–2024',s:'',t:'The Ptolemaic horizon',d:'Papakosta\'s mission reaches the layer of the 4th–3rd centuries BC: a paved road, the foundations of a monumental building descending below the water table. According to the Egyptian authorities, more than 140 official attempts to find the tomb have been made in total.'},
+ {y:String(YEAR),s:'',t:'Case open',d:'The excavations continue. The tomb has still not been found.',now:true}
+];
+
+const POLL = [
+ {id:'alex',t:'Beneath central Alexandria — Nabi Daniel or Shallalat'},
+ {id:'harbour',t:'On the floor of the Eastern Harbor'},
+ {id:'memphis',t:'In Memphis or Saqqara'},
+ {id:'venice',t:'In Venice — under the name of St. Mark'},
+ {id:'gone',t:'Destroyed beyond recovery'},
+ {id:'other',t:'Somewhere else'}
+];
+const POLL_SEED = {alex:128,harbour:23,memphis:31,venice:44,gone:97,other:12};
+
+const QUIZ = [
+ {q:'Where did Alexander the Great die?',o:['In Babylon','In Alexandria','In Pella','In Susa'],a:0,e:'In the palace of Nebuchadnezzar II in Babylon, June 10/11, 323 BC.'},
+ {q:'Who intercepted the funeral procession on its way to Macedon?',o:['Perdiccas','Ptolemy','Seleucus','Antigonus the One-Eyed'],a:1,e:'Ptolemy, satrap of Egypt, led the body away to Memphis — and thereby laid the foundation of his dynasty\'s legitimacy.'},
+ {q:'Which Roman, according to legend, broke the mummy\'s nose?',o:['Caligula','Nero','Augustus','Caracalla'],a:2,e:'Octavian Augustus in 30 BC — according to the account of Cassius Dio.'},
+ {q:'What did Ptolemy X replace the golden sarcophagus with?',o:['Marble','Glass','Silver','Cedar'],a:1,e:'Glass (crystal) — the gold went to pay the mercenaries. Strabo reports this.'},
+ {q:'Who was the last Roman emperor reliably to visit the tomb?',o:['Hadrian','Septimius Severus','Diocletian','Caracalla'],a:3,e:'Caracalla in 215 AD left his cloak, rings, and belt on the tomb (Herodian).'},
+ {q:'What did Caligula take from the tomb?',o:['Sword','Breastplate','Helmet','Diadem'],a:1,e:'The breastplate of Alexander, in which the emperor then paraded in public (Suetonius).'}
+];
+
+/* ====================== HELPERS ====================== */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const fmt = n=>Math.round(n).toLocaleString('en-US');
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Vergina sun */
+function drawSun(el,rays=16){
+  const ns='http://www.w3.org/2000/svg',R=96,r0=R*.3,base=R*.2;let d='';
+  for(let i=0;i<rays;i++){
+    const a=i*2*Math.PI/rays,L=i%2?R*.8:R,tx=Math.cos(a)*L,ty=Math.sin(a)*L,ba=a+Math.PI/2,bx=Math.cos(ba)*base/2,by=Math.sin(ba)*base/2,cx=Math.cos(a)*r0,cy=Math.sin(a)*r0;
+    d+=`M${(cx+bx).toFixed(2)},${(cy+by).toFixed(2)}L${tx.toFixed(2)},${ty.toFixed(2)}L${(cx-bx).toFixed(2)},${(cy-by).toFixed(2)}Z`;
+  }
+  const p=document.createElementNS(ns,'path');p.setAttribute('d',d);p.setAttribute('fill','currentColor');el.appendChild(p);
+  const c1=document.createElementNS(ns,'circle');c1.setAttribute('r',r0*.72);c1.setAttribute('fill','none');c1.setAttribute('stroke','currentColor');c1.setAttribute('stroke-width',2.5);el.appendChild(c1);
+  const c2=document.createElementNS(ns,'circle');c2.setAttribute('r',r0*.3);c2.setAttribute('fill','currentColor');el.appendChild(c2);
+}
+$$('.sun-logo, .sun-bg').forEach(s=>drawSun(s));
+
+/* years / days */
+$('#yrNow').textContent=YEAR;
+$('#yearsInline').textContent=YEARS_SINCE;
+$('#yearsStat').dataset.count=YEARS_SINCE;
+(function(){
+  const d=new Date(Date.UTC(2000,5,11));d.setUTCFullYear(-322);
+  const days=Math.floor((Date.now()-d.getTime())/86400000);
+  const el=$('#daysCounter');
+  let started=false;
+  new IntersectionObserver(([e],o)=>{if(e.isIntersecting&&!started){started=true;animateNum(el,days,2200);o.disconnect()}},{threshold:.3}).observe(el);
+})();
+function animateNum(el,to,dur=1600){
+  if(REDUCE){el.textContent=fmt(to);return}
+  const t0=performance.now();
+  (function f(t){const k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,4);el.textContent=fmt(to*e);if(k<1)requestAnimationFrame(f)})(t0);
+}
+$$('[data-count]').forEach(el=>setTimeout(()=>animateNum(el,+el.dataset.count,1800),400));
+
+/* ticker */
+(function(){
+  const items=['ΣΗΜΑ ΑΛΕΞΑΝΔΡΟΥ','BABYLON · 323 BC','MEMPHIS · 321 BC','ALEXANDRIA · 280 BC','SOMA · PTOLEMAEUS IV','CAESAR · 48 BC','AUGUSTUS · 30 BC','CARACALLA · 215 AD','VENEZIA · 828 AD','SIWA · 1995','AMPHIPOLIS · 2014','QUAESTIO APERTA'];
+  const html=items.map(i=>`<span>${i}</span>`).join('');
+  $('#ticker').innerHTML=html+html;
+})();
+
+/* nav */
+const nav=$('#nav');
+$('#burger').addEventListener('click',()=>nav.classList.toggle('open'));
+$$('#menu a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+const totop=$('#totop');
+totop.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+addEventListener('scroll',()=>{
+  const y=scrollY,h=document.documentElement.scrollHeight-innerHeight;
+  nav.classList.toggle('scrolled',y>40);
+  $('#progress').style.width=(h?y/h*100:0)+'%';
+  totop.classList.toggle('show',y>900);
+},{passive:true});
+dispatchEvent(new Event('scroll'));
+/* scroll spy */
+(function(){
+  const links=$$('[data-spy]');const map={};links.forEach(l=>map[l.dataset.spy]=l);
+  const targets=Object.keys(map).map(id=>document.getElementById(id)).filter(Boolean);
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('active'));map[e.target.id]&&map[e.target.id].classList.add('active')}})},{rootMargin:'-35% 0px -55% 0px'});
+  targets.forEach(t=>obs.observe(t));
+})();
+
+/* dust canvas */
+(function(){
+  const c=$('#dust');if(!c||REDUCE)return;
+  const ctx=c.getContext('2d');let w,h,parts=[],running=true;
+  function resize(){const dpr=Math.min(devicePixelRatio||1,2);w=c.clientWidth;h=c.clientHeight;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);make()}
+  function mk(init){return{x:Math.random()*w,y:init?Math.random()*h:h+10,r:Math.random()*1.5+.4,s:Math.random()*.3+.08,a:Math.random()*6.28,o:Math.random()*.5+.15,d:Math.random()*.8+.3,g:Math.random()<.2}}
+  function make(){parts=[];const n=Math.round(Math.min(170,w*h/9000));for(let i=0;i<n;i++)parts.push(mk(true))}
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of parts){
+      p.y-=p.s;p.a+=.01*p.d;p.x+=Math.sin(p.a)*.25;
+      if(p.y<-12||p.x<-12||p.x>w+12)Object.assign(p,mk(false));
+      if(p.g){ctx.fillStyle=`rgba(232,204,132,${p.o*.18})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r*4,0,6.283);ctx.fill()}
+      ctx.fillStyle=`rgba(232,204,132,${p.o})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill();
+    }
+    if(running)requestAnimationFrame(tick);
+  }
+  resize();addEventListener('resize',resize);tick();
+  new IntersectionObserver(([e])=>{const was=running;running=e.isIntersecting;if(running&&!was)tick()}).observe(c);
+})();
+
+/* reveal */
+(function(){
+  $$('.stagger').forEach(s=>[...s.children].forEach((ch,i)=>ch.style.setProperty('--i',i%8)));
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('.bar i[data-w]').forEach(b=>b.style.width=b.dataset.w+'%');obs.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  window.observeReveal=el=>obs.observe(el);
+  $$('.reveal').forEach(el=>obs.observe(el));
+})();
+
+/* ====================== JOURNEY ====================== */
+(function(){
+  const path=$('#routePath'),fill=$('#routeFill'),marker=$('#marker');if(!path)return;
+  const L=path.getTotalLength();
+  const nodes={babylon:[560,250],damascus:[400,170],memphis:[300,420],alexandria:[215,300]};
+  const at={};
+  for(const k in nodes){let best=0,bd=1e12;for(let l=0;l<=L;l+=1.5){const p=path.getPointAtLength(l);const d=(p.x-nodes[k][0])**2+(p.y-nodes[k][1])**2;if(d<bd){bd=d;best=l}}at[k]=best}
+  at.alexandria=L;
+  fill.style.strokeDasharray=L;fill.style.strokeDashoffset=L;
+  let cur=0,target=0,raf=null;
+  function frame(){
+    cur+=(target-cur)*.07;
+    if(Math.abs(target-cur)<.4){cur=target;raf=null}
+    const p=path.getPointAtLength(cur);
+    marker.setAttribute('transform',`translate(${p.x.toFixed(2)},${p.y.toFixed(2)})`);
+    fill.style.strokeDashoffset=L-cur;
+    if(raf!==null)raf=requestAnimationFrame(frame);
+  }
+  function go(node){target=at[node]??0;if(raf===null)raf=requestAnimationFrame(frame)}
+  const steps=$$('.step'),yr=$('#routeYear'),loc=$('#routeLoc');
+  function activate(step){
+    steps.forEach(s=>s.classList.toggle('active',s===step));
+    $$('.node[data-n]').forEach(n=>n.classList.toggle('on',n.dataset.n===step.dataset.node));
+    yr.textContent=step.dataset.year;loc.textContent=step.dataset.loc;go(step.dataset.node);
+  }
+  activate(steps[0]);
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)activate(e.target)})},{rootMargin:'-38% 0px -52% 0px',threshold:0});
+  steps.forEach(s=>obs.observe(s));
+})();
+
+/* ====================== WITNESSES ====================== */
+(function(){
+  const box=$('#quotes');
+  box.innerHTML=QUOTES.map(q=>`<article class="quote"><div class="who"><div class="mono">${q.m}</div><div><b>${q.w}</b><span>${q.work}</span></div></div><blockquote>${q.q}</blockquote><div class="ctx"><span>${q.c}</span><span class="yr">${q.y}</span></div></article>`).join('');
+  const step=()=>(box.querySelector('.quote')?.getBoundingClientRect().width||400)+22;
+  $('#qPrev').onclick=()=>box.scrollBy({left:-step(),behavior:'smooth'});
+  $('#qNext').onclick=()=>box.scrollBy({left:step(),behavior:'smooth'});
+})();
+
+/* ====================== HYPOTHESES ====================== */
+const byId={};HYP.forEach(h=>byId[h.id]=h);
+(function(){
+  const box=$('#cards');
+  box.innerHTML=HYP.map(h=>`<div class="card reveal" role="button" tabindex="0" aria-label="Open dossier: ${h.title}" data-id="${h.id}" data-tag="${h.tag}">
+    <div class="top"><span class="idx">Version ${h.n}</span><span class="badge ${h.badge}">${h.status}</span></div>
+    <h3>${h.title}</h3><div class="place">${h.place}</div><p>${h.summary}</p>
+    <div class="meter"><div class="row"><span>Plausibility index*</span><b>${h.score}%</b></div><div class="bar"><i data-w="${h.score}"></i></div></div>
+    <span class="more">Open dossier</span></div>`).join('');
+  $$('.card',box).forEach((c,i)=>{
+    c.style.setProperty('--i',i%6);observeReveal(c);
+    c.addEventListener('click',()=>openHyp(c.dataset.id));
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openHyp(c.dataset.id)}});
+  });
+  $('#filters').addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    $$('#filters button').forEach(x=>x.classList.toggle('on',x===b));
+    const f=b.dataset.f;
+    $$('.card',box).forEach(c=>c.classList.toggle('hide',!(f==='all'||c.dataset.tag===f)));
+  });
+})();
+
+/* modal */
+const modal=$('#modal'),mBody=$('#modalBody');
+function openHyp(id){
+  const h=byId[id];if(!h)return;
+  mBody.innerHTML=`<div class="top"><span class="idx" style="font-family:var(--caps);font-size:.66rem;letter-spacing:.3em;color:var(--muted)">Version ${h.n}</span><span class="badge ${h.badge}">${h.status}</span></div>
+  <h3>${h.title}</h3><div class="place">${h.place}</div>
+  <div class="text">${h.details}</div>
+  <div class="procon"><div class="pro"><h4>Arguments for</h4><ul>${h.pro.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="con"><h4>Arguments against</h4><ul>${h.con.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+  <div class="meter"><div class="row"><span>Plausibility index*</span><b>${h.score}%</b></div><div class="bar"><i id="mBar"></i></div></div>
+  <div class="acts"><button class="btn solid" data-map="${h.id}"><span>Show on map</span></button><button class="btn ghost" data-close><span>Close</span></button></div>`;
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{const b=$('#mBar');if(b)b.style.width=h.score+'%'}));
+  $('.box',modal).scrollTop=0;
+}
+function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+modal.addEventListener('click',e=>{
+  if(e.target.closest('[data-close]'))closeModal();
+  const m=e.target.closest('[data-map]');
+  if(m){closeModal();document.getElementById('map').scrollIntoView({behavior:'smooth'});setTimeout(()=>flyTo(m.dataset.map),700)}
+});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-open]');if(b)openHyp(b.dataset.open)});
+
+/* ====================== MAP ====================== */
+let map=null,markers={},layers={};
+const ALL_PTS=[...ROUTE_PTS.map(p=>({...p,kind:'route'})),...HYP.map(h=>({id:h.id,title:h.title,sub:h.status,coords:h.coords,zoom:h.zoom,cls:h.tag==='rejected'?'rej':'',kind:'hyp',text:h.summary}))];
+(function buildList(){
+  const list=$('#mapList');
+  const item=p=>`<button data-pt="${p.id}"><span class="dot ${p.cls}"></span><span><b>${p.title}</b><small>${p.sub}</small></span></button>`;
+  list.innerHTML=`<h4>Procession route</h4>${ROUTE_PTS.map(item).join('')}<h4>Tomb candidates</h4>${HYP.map(h=>item(ALL_PTS.find(p=>p.id===h.id))).join('')}`;
+  list.addEventListener('click',e=>{const b=e.target.closest('[data-pt]');if(!b)return;$$('[data-pt]',list).forEach(x=>x.classList.toggle('on',x===b));flyTo(b.dataset.pt)});
+})();
+function flyTo(id){
+  const p=ALL_PTS.find(x=>x.id===id);if(!p)return;
+  $$('#mapList [data-pt]').forEach(x=>x.classList.toggle('on',x.dataset.pt===id));
+  if(!map){if(p.kind==='hyp')openHyp(id);return}
+  map.flyTo(p.coords,p.zoom,{duration:1.6});
+  setTimeout(()=>markers[id]&&markers[id].openPopup(),1650);
+}
+function initMap(){
+  const el=$('#mapCanvas');
+  if(typeof L==='undefined'){$('#mapFallback').style.display='grid';return}
+  try{
+    map=L.map(el,{zoomControl:true,scrollWheelZoom:false,worldCopyJump:true});
+    layers.dark=L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap · © CARTO',subdomains:'abcd',maxZoom:19});
+    layers.sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19});
+    layers.dark.addTo(map);
+    map.on('click',()=>map.scrollWheelZoom.enable());
+    const r=['r-babylon','r-damascus','r-memphis','r-alex'].map(id=>ROUTE_PTS.find(p=>p.id===id).coords);
+    L.polyline(r,{color:'#e8cc84',weight:2,dashArray:'6 8',opacity:.85}).addTo(map);
+    L.polyline([ROUTE_PTS[1].coords,ROUTE_PTS[4].coords],{color:'#948a76',weight:1.4,dashArray:'2 8',opacity:.7}).addTo(map).bindTooltip("Perdiccas' plan: to Aegae",{className:'lbl',sticky:true});
+    L.polyline([ROUTE_PTS[2].coords,byId.siwa.coords],{color:'#948a76',weight:1.4,dashArray:'2 8',opacity:.7}).addTo(map).bindTooltip("Alexander's will: to Siwa",{className:'lbl',sticky:true});
+    const icon=cls=>L.divIcon({className:'pin-wrap',html:`<div class="pin ${cls}"></div>`,iconSize:[14,14],iconAnchor:[7,7],popupAnchor:[0,-12]});
+    ALL_PTS.forEach(p=>{
+      const m=L.marker(p.coords,{icon:icon(p.cls)}).addTo(map);
+      m.bindPopup(`<div class="pop"><b>${p.title}</b><span>${p.sub}</span><p>${p.text}</p>${p.kind==='hyp'?`<button data-open="${p.id}">Open dossier</button>`:''}</div>`,{maxWidth:280});
+      m.bindTooltip(p.title,{className:'lbl',direction:'top',offset:[0,-10]});
+      markers[p.id]=m;
+    });
+    fitAll();
+    $$('.map-ctl button').forEach(b=>b.addEventListener('click',()=>{
+      if(b.dataset.layer){$$('.map-ctl [data-layer]').forEach(x=>x.classList.toggle('on',x===b));Object.values(layers).forEach(l=>map.removeLayer(l));layers[b.dataset.layer].addTo(map)}
+      if(b.dataset.fly==='alex')map.flyToBounds([[31.188,29.885],[31.215,29.93]],{duration:1.6,padding:[20,20]});
+      if(b.dataset.fly==='all')fitAll(true);
+    }));
+  }catch(err){console.warn(err);$('#mapFallback').style.display='grid'}
+}
+function fitAll(anim){const b=L.latLngBounds([[28,11],[46,45]]);anim?map.flyToBounds(b,{padding:[20,20],duration:1.6}):map.fitBounds(b,{padding:[20,20]})}
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){initMap();o.disconnect()}},{rootMargin:'400px'}).observe($('#map-section'));
+
+/* ====================== CHRONICLE ====================== */
+(function(){
+  $('#ledger').innerHTML=CHRON.map(c=>`<div class="row-l reveal${c.now?' now':''}"><div class="y">${c.y}${c.s?`<small>${c.s}</small>`:''}</div><div><h4>${c.t}</h4><p>${c.d}</p></div></div>`).join('');
+  $$('#ledger .row-l').forEach((r,i)=>{r.style.setProperty('--i',i%5);observeReveal(r)});
+})();
+
+/* ====================== POLL ====================== */
+(function(){
+  const KEY='alex-tomb-poll',VK='alex-tomb-vote',body=$('#pollBody');
+  const load=()=>{try{return JSON.parse(localStorage.getItem(KEY))||{...POLL_SEED}}catch(e){return {...POLL_SEED}}};
+  const save=v=>{try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}};
+  const letters='ABCDEF';
+  function render(){
+    const mine=localStorage.getItem(VK);
+    if(!mine){
+      body.innerHTML=POLL.map((o,i)=>`<button class="opt" data-v="${o.id}"><span class="k">${letters[i]}</span><span>${o.t}</span></button>`).join('');
+      return;
+    }
+    const v=load(),total=Object.values(v).reduce((a,b)=>a+b,0)||1;
+    body.innerHTML=POLL.map((o,i)=>{const pct=Math.round(v[o.id]/total*100);return `<div class="opt res${o.id===mine?' mine':''}"><i class="fill" data-w="${pct}"></i><span class="k">${letters[i]}</span><span>${o.t}</span><span class="pct">${pct}%</span></div>`}).join('')+`<p style="font-size:.78rem;color:var(--muted);margin-top:8px">Total votes: ${total}. Your choice is highlighted in gold.</p><button class="small-link" id="revote">Vote again</button>`;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.fill',body).forEach(f=>f.style.width=f.dataset.w+'%')));
+  }
+  body.addEventListener('click',e=>{
+    const b=e.target.closest('[data-v]');
+    if(b){const v=load();v[b.dataset.v]=(v[b.dataset.v]||0)+1;save(v);localStorage.setItem(VK,b.dataset.v);render();return}
+    if(e.target.id==='revote'){const v=load(),m=localStorage.getItem(VK);if(m&&v[m]>0)v[m]--;save(v);localStorage.removeItem(VK);render()}
+  });
+  render();
+})();
+
+/* ====================== QUIZ ====================== */
+(function(){
+  const body=$('#quizBody');let i=0,score=0,locked=false;
+  const letters='ABCD';
+  function q(){
+    locked=false;const d=QUIZ[i];
+    body.innerHTML=`<div class="meta"><span>Question ${i+1} / ${QUIZ.length}</span><span>Correct: ${score}</span></div><div class="q">${d.q}</div>${d.o.map((o,k)=>`<button class="opt" data-k="${k}"><span class="k">${letters[k]}</span><span>${o}</span></button>`).join('')}<div class="expl" id="expl">${d.e}</div><div id="nextWrap"></div>`;
+  }
+  function result(){
+    const t=score===QUIZ.length?['Ptolemy Soter','You know more about the body than the Diadochi themselves. Time to apply for a dig permit at Shallalat.']:score>=4?['Strabo approves','A solid knowledge of the sources. All that remains is to find the crossroads of the Canopic Way and the Street of the Soma.']:score>=2?['Alexandrian guide','You have grasped the general outline. Reread the witness testimony — all the answers are there.']:['John Chrysostom','"Where is the tomb of Alexander?" — so even you do not know. But now there is a reason to read the dossier again.'];
+    body.innerHTML=`<div class="result"><div class="big">${score}<span style="font-size:.4em;color:var(--muted)">/${QUIZ.length}</span></div><div class="t">${t[0]}</div><p>${t[1]}</p><button class="btn" id="again"><span>Start over</span></button></div>`;
+  }
+  body.addEventListener('click',e=>{
+    const b=e.target.closest('[data-k]');
+    if(b&&!locked){
+      locked=true;const d=QUIZ[i],k=+b.dataset.k;
+      $$('[data-k]',body).forEach(x=>{x.disabled=true;if(+x.dataset.k===d.a)x.classList.add('ok')});
+      if(k===d.a)score++;else b.classList.add('bad');
+      $('#expl').classList.add('show');
+      $('#nextWrap').innerHTML=`<button class="btn solid" id="next" style="margin-top:8px"><span>${i<QUIZ.length-1?'Next question':'Result'}</span></button>`;
+      return;
+    }
+    if(e.target.closest('#next')){i++;i<QUIZ.length?q():result();return}
+    if(e.target.closest('#again')){i=0;score=0;q()}
+  });
+  q();
+})();
+</script>
+</body>
+</html>
